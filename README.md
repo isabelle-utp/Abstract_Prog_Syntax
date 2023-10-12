@@ -1,2 +1,2 @@
-# Abstract_Prog_Syntax
+# Abstract Program Syntax
 A simple Isabelle session introducing syntax for abstract programs
