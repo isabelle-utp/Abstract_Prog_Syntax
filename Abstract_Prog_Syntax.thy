@@ -10,7 +10,7 @@ text \<open> In the world of UTP, many programming theories use the same basic p
 
 consts
   ucond    :: "'p \<Rightarrow> ('s \<Rightarrow> bool) \<Rightarrow> 'p \<Rightarrow> 'p"
-  useq     :: "'p \<Rightarrow> 'q \<Rightarrow> 'r" (infixl ";;" 55)
+  useq     :: "'p \<Rightarrow> 'q \<Rightarrow> 'r" (infixr ";;" 55)
   uassigns :: "('a, 'b) psubst \<Rightarrow> 'p" ("\<langle>_\<rangle>\<^sub>a")
   uskip    :: "'p" ("II")
   utest    :: "('s \<Rightarrow> bool) \<Rightarrow> 'p"
@@ -34,10 +34,11 @@ syntax
   "_ucond_else"    :: "logic \<Rightarrow> elsebranch" (" else /_")
   "_ucond_no_else" :: "elsebranch" ("")
   "_uassign"       :: "svid \<Rightarrow> logic \<Rightarrow> logic" (infix ":=" 61)
+  "_swap"          :: "svid \<Rightarrow> svid \<Rightarrow> logic" ("swap'(_, _')") (* Atomic swap *)
   "_utest"         :: "logic \<Rightarrow> logic" ("\<questiondown>_?")
 
 translations
-  "_ucond b P Q" => "CONST ucond P (b)\<^sub>e Q"
+  "_ucond P b Q" => "CONST ucond P (b)\<^sub>e Q"
   "_ucond_gen b P Q" => "CONST ucond P (b)\<^sub>e Q"
   "_ucond_else P" => "P"
   "_ucond_no_else" => "II"
@@ -48,6 +49,7 @@ translations
   "_ucond P b Q" == "CONST ucond P (b)\<^sub>e Q"
   "_uassign x e" == "CONST uassigns (CONST subst_upd (CONST subst_id) x (e)\<^sub>e)"
   "_uassign (_svid_tuple (_of_svid_list (x +\<^sub>L y))) e" <= "_uassign (x +\<^sub>L y) e" 
+  "_swap x y" => "(x, y) := ($y, $x)"
   "_utest P" == "CONST utest (P)\<^sub>e"
 
 end
