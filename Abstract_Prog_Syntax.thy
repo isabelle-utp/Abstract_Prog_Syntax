@@ -14,6 +14,7 @@ consts
   uassigns :: "('a, 'b) psubst \<Rightarrow> 'p" ("\<langle>_\<rangle>\<^sub>a")
   uskip    :: "'p" ("II")
   utest    :: "('s \<Rightarrow> bool) \<Rightarrow> 'p"
+  uwhile   :: "('s \<Rightarrow> bool) \<Rightarrow> 'p \<Rightarrow> 'p"
 
 abbreviation (input) useqh :: "'p \<Rightarrow> 'p \<Rightarrow> 'p" (infixr ";;\<^sub>h" 61) where
 "useqh P Q \<equiv> (P ;; Q)"
@@ -24,6 +25,7 @@ expr_constructor useqh (0 1)
 expr_constructor uassigns
 expr_constructor uskip
 expr_constructor utest
+expr_constructor uwhile
 
 nonterminal elsebranch
 
@@ -36,6 +38,7 @@ syntax
   "_uassign"       :: "svid \<Rightarrow> logic \<Rightarrow> logic" (infix ":=" 61)
   "_swap"          :: "svid \<Rightarrow> svid \<Rightarrow> logic" ("swap'(_, _')") (* Atomic swap *)
   "_utest"         :: "logic \<Rightarrow> logic" ("\<questiondown>_?")
+  "_uwhile"        :: "logic \<Rightarrow> logic \<Rightarrow> logic" ("while _ do _ od")
 
 translations
   "_ucond P b Q" => "CONST ucond P (b)\<^sub>e Q"
@@ -44,12 +47,13 @@ translations
   "_ucond_no_else" => "II"
   "_ucond_gen b P (_ucond_else Q)" <= "CONST ucond P (b)\<^sub>e Q"
   "_ucond_elseif b P Q" => "CONST ucond P (b)\<^sub>e Q"
-  "_ucond_elseif c Q (_ucond_else R)" <= "_cond_else (CONST ucond Q (c)\<^sub>e R)"
+  "_ucond_elseif c Q (_ucond_else R)" <= "_ucond_else (CONST ucond Q (c)\<^sub>e R)"
   "_ucond_no_else" <= "_ucond_else II"
   "_ucond P b Q" == "CONST ucond P (b)\<^sub>e Q"
   "_uassign x e" == "CONST uassigns (CONST subst_upd (CONST subst_id) x (e)\<^sub>e)"
   "_uassign (_svid_tuple (_of_svid_list (x +\<^sub>L y))) e" <= "_uassign (x +\<^sub>L y) e" 
   "_swap x y" => "(x, y) := ($y, $x)"
   "_utest P" == "CONST utest (P)\<^sub>e"
+  "_uwhile b P" == "CONST uwhile (b)\<^sub>e P"
 
 end
