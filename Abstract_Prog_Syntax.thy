@@ -15,6 +15,7 @@ consts
   uskip    :: "'p" ("II")
   utest    :: "('s \<Rightarrow> bool) \<Rightarrow> 'p"
   uwhile   :: "('s \<Rightarrow> bool) \<Rightarrow> 'p \<Rightarrow> 'p"
+  uuntil   :: "'p \<Rightarrow> ('s \<Rightarrow> bool) \<Rightarrow> 'p"
 
 abbreviation (input) useqh :: "'p \<Rightarrow> 'p \<Rightarrow> 'p" (infixr ";;\<^sub>h" 61) where
 "useqh P Q \<equiv> (P ;; Q)"
@@ -39,6 +40,7 @@ syntax
   "_swap"          :: "svid \<Rightarrow> svid \<Rightarrow> logic" ("swap'(_, _')") (* Atomic swap *)
   "_utest"         :: "logic \<Rightarrow> logic" ("\<questiondown>_?")
   "_uwhile"        :: "logic \<Rightarrow> logic \<Rightarrow> logic" ("while _ do _ od")
+  "_uuntil"        :: "logic \<Rightarrow> logic \<Rightarrow> logic" ("repeat _ until _" [0, 70] 70)
 
 translations
   "_ucond P b Q" => "CONST ucond P (b)\<^sub>e Q"
@@ -55,5 +57,6 @@ translations
   "_swap x y" => "(x, y) := ($y, $x)"
   "_utest P" == "CONST utest (P)\<^sub>e"
   "_uwhile b P" == "CONST uwhile (b)\<^sub>e P"
+  "_uuntil P b" == "CONST uuntil P (b)\<^sub>e"
 
 end
