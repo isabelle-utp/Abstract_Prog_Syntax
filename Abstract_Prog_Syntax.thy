@@ -59,4 +59,10 @@ translations
   "_uwhile b P" == "CONST uwhile (b)\<^sub>e P"
   "_uuntil P b" == "CONST uuntil P (b)\<^sub>e"
 
+syntax
+  "_ghost_old" :: "id" \<comment> \<open> A distinguished name for the ghost state ("old") \<close>
+
+parse_translation \<open> 
+  [(@{syntax_const "_ghost_old"}, fn ctx => fn term => Syntax.free "old")]\<close>
+
 end
