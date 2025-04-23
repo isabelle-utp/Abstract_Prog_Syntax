@@ -1,7 +1,7 @@
 section \<open> Abstract Program Syntax \<close>
 
 theory Abstract_Prog_Syntax
-    imports "Shallow-Expressions.Shallow_Expressions"
+    imports "Shallow_Expressions.Shallow_Expressions"
 begin
 
 text \<open> In the world of UTP, many programming theories use the same basic program operators. This
