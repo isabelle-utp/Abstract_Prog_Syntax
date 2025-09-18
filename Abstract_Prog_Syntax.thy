@@ -70,17 +70,25 @@ parse_translation \<open>
   [(@{syntax_const "_ghost_old"}, fn ctx => fn term => Syntax.free "old")]\<close>
 
 consts hoare_rel :: "('s\<^sub>1 \<Rightarrow> bool) \<Rightarrow> 'p \<Rightarrow> ('s\<^sub>1 \<Rightarrow> 's\<^sub>2 \<Rightarrow> bool) \<Rightarrow> bool"
+consts thoare_rel :: "('s\<^sub>1 \<Rightarrow> bool) \<Rightarrow> 'p \<Rightarrow> ('s\<^sub>1 \<Rightarrow> 's\<^sub>2 \<Rightarrow> bool) \<Rightarrow> bool"
 
 abbreviation hoare :: "('s \<Rightarrow> bool) \<Rightarrow> 'p \<Rightarrow> ('s \<Rightarrow> bool) \<Rightarrow> bool" where
 "hoare P C Q \<equiv> hoare_rel P C (\<lambda> x. Q)"
 
+abbreviation thoare :: "('s \<Rightarrow> bool) \<Rightarrow> 'p \<Rightarrow> ('s \<Rightarrow> bool) \<Rightarrow> bool" where
+"thoare P C Q \<equiv> thoare_rel P C (\<lambda> x. Q)"
+
 syntax 
-  "_hoare" :: "logic \<Rightarrow> logic \<Rightarrow> logic \<Rightarrow> logic" ("(2H{_} /_) /{_}")
-  "_hoare" :: "logic \<Rightarrow> logic \<Rightarrow> logic \<Rightarrow> logic" ("(2\<^bold>{_\<^bold>} /_) /\<^bold>{_\<^bold>}")
+  "_hoare"  :: "logic \<Rightarrow> logic \<Rightarrow> logic \<Rightarrow> logic" ("(2H{_} /_) /{_}")
+  "_hoare"  :: "logic \<Rightarrow> logic \<Rightarrow> logic \<Rightarrow> logic" ("(2\<^bold>{_\<^bold>} /_) /\<^bold>{_\<^bold>}")
+  "_thoare" :: "logic \<Rightarrow> logic \<Rightarrow> logic \<Rightarrow> logic" ("(2H[_] /_) /[_]")
 
 translations
   "H{P} C {Q}" => "CONST hoare_rel (P)\<^sub>e C (\<lambda> _ghost_old. (Q)\<^sub>e)"
   "H{P} C {Q}" <= "CONST hoare_rel (P)\<^sub>e C (\<lambda> old. (Q)\<^sub>e)"
   "H{P} C {Q}" <= "CONST hoare (P)\<^sub>e C (Q)\<^sub>e"
+  "H[P] C [Q]" => "CONST thoare_rel (P)\<^sub>e C (\<lambda> _ghost_old. (Q)\<^sub>e)"
+  "H[P] C [Q]" <= "CONST thoare_rel (P)\<^sub>e C (\<lambda> old. (Q)\<^sub>e)"
+  "H[P] C [Q]" <= "CONST thoare (P)\<^sub>e C (Q)\<^sub>e"
 
 end
