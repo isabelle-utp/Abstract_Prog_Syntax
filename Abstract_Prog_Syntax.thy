@@ -4,6 +4,8 @@ theory Abstract_Prog_Syntax
     imports "Shallow_Expressions.Shallow_Expressions"
 begin
 
+subsection \<open> Programming Operators \<close>
+
 text \<open> In the world of UTP, many programming theories use the same basic program operators. This
   theory factors them all out as polymorphic constants and provides syntax translations to enable
   parsing and pretty printing. \<close>
@@ -59,10 +61,26 @@ translations
   "_uwhile b P" == "CONST uwhile (b)\<^sub>e P"
   "_uuntil P b" == "CONST uuntil P (b)\<^sub>e"
 
+subsection \<open> Assertional Calculi \<close>
+
 syntax
   "_ghost_old" :: "id" \<comment> \<open> A distinguished name for the ghost state ("old") \<close>
 
 parse_translation \<open> 
   [(@{syntax_const "_ghost_old"}, fn ctx => fn term => Syntax.free "old")]\<close>
+
+consts hoare_rel :: "('s\<^sub>1 \<Rightarrow> bool) \<Rightarrow> 'p \<Rightarrow> ('s\<^sub>1 \<Rightarrow> 's\<^sub>2 \<Rightarrow> bool) \<Rightarrow> bool"
+
+abbreviation hoare :: "('s \<Rightarrow> bool) \<Rightarrow> 'p \<Rightarrow> ('s \<Rightarrow> bool) \<Rightarrow> bool" where
+"hoare P C Q \<equiv> hoare_rel P C (\<lambda> x. Q)"
+
+syntax 
+  "_hoare" :: "logic \<Rightarrow> logic \<Rightarrow> logic \<Rightarrow> logic" ("(2H{_} /_) /{_}")
+  "_hoare" :: "logic \<Rightarrow> logic \<Rightarrow> logic \<Rightarrow> logic" ("(2\<^bold>{_\<^bold>} /_) /\<^bold>{_\<^bold>}")
+
+translations
+  "H{P} C {Q}" => "CONST hoare_rel (P)\<^sub>e C (\<lambda> _ghost_old. (Q)\<^sub>e)"
+  "H{P} C {Q}" <= "CONST hoare_rel (P)\<^sub>e C (\<lambda> old. (Q)\<^sub>e)"
+  "H{P} C {Q}" <= "CONST hoare (P)\<^sub>e C (Q)\<^sub>e"
 
 end
